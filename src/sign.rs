@@ -1,22 +1,47 @@
-use wasm_bindgen::JsCast;
-use web_sys::HtmlTextAreaElement;
+use base64ct::{Base64, Encoding};
+use ed25519::signature::Signer;
+use ed25519_dalek::SigningKey;
 use yew::prelude::*;
+
+use crate::crypto::derive_signing_key;
+use crate::utils::{normalize_newlines, remove_trailing_blank_lines, textarea_value};
 
 #[function_component]
 pub fn Sign() -> Html {
     let text_to_sign_handle = use_state(String::default);
-    let text_to_sign = (*text_to_sign_handle).clone();
+    let signing_key_handle = use_state(|| None);
 
+    let text_to_sign = (*text_to_sign_handle).clone();
+    let text_normalized = remove_trailing_blank_lines(&normalize_newlines(&text_to_sign));
+    let text_after_sign = use_memo(
+        (text_normalized, (*signing_key_handle).clone()),
+        |(text, key)| {
+            key.as_ref()
+                .map(|key: &SigningKey| {
+                    let text_bytes = text.as_bytes();
+                    let len = text_bytes.len();
+                    let signature = key.sign(text_bytes);
+                    format!(
+                        "{}\n\n长度: {}bytes\n签名: {}",
+                        text,
+                        len,
+                        Base64::encode_string(&signature.to_bytes())
+                    )
+                })
+                .unwrap_or_default()
+        },
+    );
+
+    let on_calc_key = {
+        let signing_key_handle = signing_key_handle.clone();
+        Callback::from(move |_| {
+            let signing_key = derive_signing_key();
+            signing_key_handle.set(Some(signing_key));
+        })
+    };
     let on_text_input = {
         let text_to_sign_handle = text_to_sign_handle.clone();
-        Callback::from(move |e: InputEvent| {
-            let input = e
-                .target()
-                .and_then(|t| t.dyn_into::<HtmlTextAreaElement>().ok());
-            if let Some(input) = input {
-                text_to_sign_handle.set(input.value());
-            }
-        })
+        Callback::from(move |e: InputEvent| text_to_sign_handle.set(textarea_value(e)))
     };
 
     html! {
@@ -49,6 +74,7 @@ pub fn Sign() -> Html {
                 <div class="col-md-3 mb-2">
                     <button
                         class="btn btn-lg btn-primary"
+                        onclick={on_calc_key}
                     >
                         { "计算私钥" }
                     </button>
@@ -83,7 +109,7 @@ pub fn Sign() -> Html {
                         id="signature"
                         readonly={true}
                         rows="3"
-                        value={text_to_sign.clone()}
+                        value={(*text_after_sign).clone()}
                     />
                 </div>
             </div>

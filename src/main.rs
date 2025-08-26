@@ -1,6 +1,8 @@
 use yew::prelude::*;
 
+mod crypto;
 mod sign;
+mod utils;
 mod verify;
 
 #[function_component]
