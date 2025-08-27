@@ -23,7 +23,7 @@ fn App() -> Html {
             <ul class="nav nav-tabs">
                 <li class="nav-item">
                     <a
-                        class={classes!("nav-link", if *is_sign { "active" } else { "" })}
+                        class={classes!("nav-link", is_sign.then_some("active"))}
                         aria-current="page" href="#" onclick={on_switch.clone()}
                     >
                         { "签名" }
@@ -31,7 +31,7 @@ fn App() -> Html {
                 </li>
                 <li class="nav-item">
                     <a
-                        class={classes!("nav-link", if !*is_sign { "active" } else { "" })}
+                        class={classes!("nav-link", (!*is_sign).then_some("active"))}
                         aria-current="page" href="#" onclick={on_switch.clone()}
                     >
                         { "验证" }
@@ -39,11 +39,12 @@ fn App() -> Html {
                 </li>
             </ul>
 
-            if *is_sign {
+            <div class={classes!((!*is_sign).then_some("d-none"))}>
                 <sign::Sign />
-            } else {
+            </div>
+            <div class={classes!(is_sign.then_some("d-none"))}>
                 <verify::Verify />
-            }
+            </div>
         </div>
     }
 }
