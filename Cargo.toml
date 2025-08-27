@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+argon2 = "0.5.3"
 base64ct = "1.8.0"
 ed25519 = "2.2.3"
 ed25519-dalek = { version = "2.2.0", features = [ "pem", "pkcs8" ] }
+gloo-timers = { version="0.3.0", features = [ "futures" ] }
 wasm-bindgen = "0.2.100"
 web-sys = "0.3.77"
 yew = { version = "0.21.0", features = ["csr"] }
