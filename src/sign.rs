@@ -1,14 +1,34 @@
+use argon2::{Algorithm, Argon2, Params, Version};
 use base64ct::{Base64, Encoding};
 use ed25519::signature::Signer;
-use ed25519_dalek::SigningKey;
+use ed25519_dalek::{SECRET_KEY_LENGTH, SigningKey};
 use gloo_timers::future::sleep;
 use std::time::Duration;
 use yew::platform::spawn_local;
 use yew::prelude::*;
 
-use crate::crypto::derive_signing_key;
-use crate::sign;
 use crate::utils::{input_value, normalize_newlines, remove_trailing_blank_lines, textarea_value};
+
+fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
+    let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
+    Argon2::new_with_secret(
+        b"_pepper_",
+        Algorithm::default(),
+        Version::default(),
+        Params::new(
+            Params::DEFAULT_M_COST * 2,
+            Params::DEFAULT_T_COST * 2,
+            Params::DEFAULT_P_COST,
+            None,
+        )
+        .unwrap(),
+    )
+    .unwrap()
+    .hash_password_into(password, salt, &mut secret_key_bytes)
+    .unwrap();
+
+    SigningKey::from_bytes(&secret_key_bytes)
+}
 
 #[function_component]
 pub fn Sign() -> Html {
@@ -30,7 +50,7 @@ pub fn Sign() -> Html {
                     let len = text_bytes.len();
                     let signature = key.sign(text_bytes);
                     format!(
-                        "{}\n\n长度: {}bytes\n签名: {}",
+                        "{}\n\n长度: {} bytes\n签名: {}",
                         text,
                         len,
                         Base64::encode_string(&signature.to_bytes())
