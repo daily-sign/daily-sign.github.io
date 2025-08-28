@@ -17,7 +17,7 @@ fn App() -> Html {
 
     html! {
         <div class="container">
-            <h1 class="text-center my-5 font-a">{ "Easy Sign" }</h1>
+            <h1 class="text-center my-5 font-a">{ "Daily Sign" }</h1>
 
             <ul class="nav nav-tabs">
                 <li class="nav-item">
