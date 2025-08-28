@@ -22,7 +22,7 @@ jobs:
           # Optional version of trunk to install(eg. 'v0.21.14', 'latest')
           version: 'latest'
       - name: Build
-        run: trunk build --release 
+        run: trunk build --release -M
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
