@@ -20,3 +20,21 @@ body {
 .font-a {
     font-family: Anironc, sans-serif;
 }
+
+.btn-clipboard {
+    z-index: 10;
+    display: inline-block;
+    padding: .1rem .2rem;
+    margin-left: .25rem;
+    font-size: 75%;
+    color: #818a91;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    border-radius: .25rem;
+}
+
+.btn-clipboard:hover {
+    color: #fff;
+    background-color: #818a91;
+}

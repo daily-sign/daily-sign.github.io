@@ -6,8 +6,9 @@ use gloo_timers::future::sleep;
 use std::time::Duration;
 use yew::platform::spawn_local;
 use yew::prelude::*;
+use yew_hooks::use_clipboard;
 
-use crate::utils::{input_value, normalize_newlines, remove_trailing_blank_lines, textarea_value};
+use crate::utils::{input_value, normalize_newlines, remove_trailing_blank_lines, textarea_value, make_write_to_clipboard_btn};
 
 fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
     let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
@@ -16,8 +17,8 @@ fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
         Algorithm::default(),
         Version::default(),
         Params::new(
-            Params::DEFAULT_M_COST * 2,
-            Params::DEFAULT_T_COST * 2,
+            Params::DEFAULT_M_COST,
+            Params::DEFAULT_T_COST,
             Params::DEFAULT_P_COST,
             None,
         )
@@ -32,6 +33,8 @@ fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
 
 #[function_component]
 pub fn Sign() -> Html {
+    let clipboard = use_clipboard();
+
     let username = use_state(String::default);
     let password = use_state(String::default);
     let text_to_sign = use_state(String::default);
@@ -62,7 +65,10 @@ pub fn Sign() -> Html {
 
     let on_calc_key = {
         let is_calcing = is_calcing.clone();
-        Callback::from(move |_| is_calcing.set(true))
+        Callback::from(move |e: SubmitEvent| {
+            e.prevent_default();
+            is_calcing.set(true);
+        })
     };
     let on_text_input = {
         let text_to_sign = text_to_sign.clone();
@@ -111,41 +117,44 @@ pub fn Sign() -> Html {
 
     html! {
         <div class="my-4 col">
-            <div class="row align-items-end mb-4">
+            // To trigger the browser to save the password
+            <form class="row align-items-end mb-4" onsubmit={on_calc_key}>
                 <div class="col-md-4 mb-2">
                     <div class="form-floating">
-                    <input
-                        id="username"
-                        type="text"
-                        class="form-control"
-                        placeholder="用户名"
-                        aria-label="Name"
-                        value={(*username).clone()}
-                        oninput={on_username_input}
-                    />
-                    <label for="username">{ "用户名" }</label>
+                        <input
+                            id="username"
+                            name="username"
+                            type="text"
+                            class="form-control"
+                            placeholder="用户名"
+                            aria-label="Name"
+                            value={(*username).clone()}
+                            oninput={on_username_input}
+                        />
+                        <label for="username">{ "用户名" }</label>
                     </div>
                 </div>
                 <div class="col-md-5 mb-2">
-                    <div class="form-floating" >
-                    <input
-                        id="password"
-                        type="password"
-                        class="form-control"
-                        placeholder="密码"
-                        aria-label="Password"
-                        value={(*password).clone()}
-                        oninput={on_password_input}
-                    />
-                    <label for="password">{ "密码" }</label>
+                    <div class="form-floating">
+                        <input
+                            id="password"
+                            name="password"
+                            type="password"
+                            class="form-control"
+                            placeholder="密码"
+                            aria-label="Password"
+                            value={(*password).clone()}
+                            oninput={on_password_input}
+                        />
+                        <label for="password">{ "密码" }</label>
                     </div>
                 </div>
                 <div class="col-md-3 mb-2">
                     if !*is_calcing {
                         if signing_key.is_none() {
                             <button
-                                class="btn btn-lg btn-primary"
-                                onclick={on_calc_key}
+                                class="btn btn-primary"
+                                //onclick={on_calc_key}
                                 disabled={
                                     username.is_empty() || password.is_empty()
                                 }
@@ -154,16 +163,17 @@ pub fn Sign() -> Html {
                             </button>
                         } else {
                             <button
-                                class="btn btn-lg btn-warning"
+                                class="btn btn-warning"
+                                type="button"
                             >
                                 { "导出私钥" }
                             </button>
                         }
                     } else {
-                        <span class="text-muted fs-5">{ "计算中..." }</span>
+                        <span class="text-muted">{ "计算中..." }</span>
                     }
                 </div>
-            </div>
+            </form>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label
@@ -186,6 +196,7 @@ pub fn Sign() -> Html {
                         class="form-label"
                     >
                         { "签名后文本" }
+                        { make_write_to_clipboard_btn(clipboard.clone(), (*text_after_sign).clone()) }
                     </label>
                     <textarea
                         class="form-control"
@@ -197,13 +208,14 @@ pub fn Sign() -> Html {
                 </div>
             </div>
             if let Some(key) = signing_key.as_ref() {
-                <div class="col mb-3">
+                <div class="col mb-5">
                     <label
                         for="pubKey"
                         class="form-label"
                     >
                         { "公钥 (验证用)" }
                     </label>
+                    { make_write_to_clipboard_btn(clipboard.clone(), Base64::encode_string(key.verifying_key().as_bytes())) }
                     <input
                         type="text"
                         class="form-control"

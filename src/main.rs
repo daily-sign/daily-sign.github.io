@@ -6,7 +6,7 @@ mod verify;
 
 #[function_component]
 fn App() -> Html {
-    let is_sign = use_state(|| false);
+    let is_sign = use_state(|| true);
 
     let on_switch = {
         let is_sign = is_sign.clone();
