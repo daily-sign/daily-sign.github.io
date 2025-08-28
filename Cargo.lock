@@ -176,6 +176,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "daily-sign"
+version = "0.1.0"
+dependencies = [
+ "argon2",
+ "base64ct",
+ "ed25519-dalek",
+ "gloo-dialogs 0.2.0",
+ "gloo-timers 0.3.0",
+ "wasm-bindgen",
+ "web-sys",
+ "yew",
+]
+
+[[package]]
 name = "der"
 version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -195,21 +209,6 @@ dependencies = [
  "block-buffer",
  "crypto-common",
  "subtle",
-]
-
-[[package]]
-name = "easy-sign"
-version = "0.1.0"
-dependencies = [
- "argon2",
- "base64ct",
- "ed25519",
- "ed25519-dalek",
- "gloo-dialogs 0.2.0",
- "gloo-timers 0.3.0",
- "wasm-bindgen",
- "web-sys",
- "yew",
 ]
 
 [[package]]

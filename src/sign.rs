@@ -1,7 +1,6 @@
 use argon2::{Algorithm, Argon2, Params, Version};
 use base64ct::{Base64, Encoding};
-use ed25519::signature::Signer;
-use ed25519_dalek::{SECRET_KEY_LENGTH, SigningKey};
+use ed25519_dalek::{SECRET_KEY_LENGTH, Signer, SigningKey};
 use gloo_timers::future::sleep;
 use std::time::Duration;
 use yew::platform::spawn_local;
