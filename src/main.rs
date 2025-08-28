@@ -1,3 +1,4 @@
+use gloo_utils::window;
 use yew::prelude::*;
 
 mod sign;
@@ -6,7 +7,7 @@ mod verify;
 
 #[function_component]
 fn App() -> Html {
-    let is_sign = use_state(|| true);
+    let is_sign = use_state(|| window().location().hash().unwrap_or_default() != "#verify");
 
     let on_switch = {
         let is_sign = is_sign.clone();
@@ -23,7 +24,7 @@ fn App() -> Html {
                 <li class="nav-item">
                     <a
                         class={classes!("nav-link", is_sign.then_some("active"))}
-                        aria-current="page" href="#" onclick={on_switch.clone()}
+                        aria-current="page" href="#sign" onclick={on_switch.clone()}
                     >
                         { "签名" }
                     </a>
@@ -31,7 +32,7 @@ fn App() -> Html {
                 <li class="nav-item">
                     <a
                         class={classes!("nav-link", (!*is_sign).then_some("active"))}
-                        aria-current="page" href="#" onclick={on_switch.clone()}
+                        aria-current="page" href="#verify" onclick={on_switch.clone()}
                     >
                         { "验证" }
                     </a>

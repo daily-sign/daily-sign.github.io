@@ -1,9 +1,10 @@
 use std::rc::Rc;
 
 use gloo_dialogs::alert;
+use gloo_utils::window;
 use wasm_bindgen::closure::Closure;
-use wasm_bindgen::{JsCast, JsValue, UnwrapThrowExt};
-use web_sys::{Clipboard, EventTarget, HtmlInputElement, HtmlTextAreaElement, window};
+use wasm_bindgen::{JsCast, JsValue};
+use web_sys::{Clipboard, EventTarget, HtmlInputElement, HtmlTextAreaElement};
 use yew::prelude::*;
 
 pub fn input_value(t: Option<EventTarget>) -> String {
@@ -31,10 +32,7 @@ pub fn remove_trailing_blank_lines(s: &str) -> String {
 // Some code is from yew-hooks use_clipboard.rs
 
 pub fn get_clipboard() -> Clipboard {
-    window()
-        .expect_throw("Can't find the global Window")
-        .navigator()
-        .clipboard()
+    window().navigator().clipboard()
 }
 
 pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Html {
