@@ -6,7 +6,6 @@ use gloo_timers::future::sleep;
 use std::time::Duration;
 use yew::platform::spawn_local;
 use yew::prelude::*;
-use yew_hooks::use_clipboard;
 
 use crate::utils::*;
 
@@ -33,7 +32,7 @@ fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
 
 #[function_component]
 pub fn Sign() -> Html {
-    let clipboard = use_clipboard();
+    let clipboard = use_memo((), |_| get_clipboard());
 
     let username = use_state(String::default);
     let password = use_state(String::default);
@@ -97,7 +96,7 @@ pub fn Sign() -> Html {
         let is_calcing = is_calcing.clone();
 
         // salt only required uniqueness
-        let b_salt = format!("easy_sign:{}:手持两把锟斤拷", *username).into_bytes();
+        let b_salt = format!("daily_sign:{}:手持两把锟斤拷", *username).into_bytes();
         let b_password = (*password).clone().into_bytes();
 
         use_effect_with(*is_calcing, move |&is_c| {
@@ -182,7 +181,12 @@ pub fn Sign() -> Html {
                     >
                         { "需要签名的文本" }
                     </label>
-                    { make_read_from_clipboard_btn(clipboard.clone(), text_to_sign.setter()) }
+                    {
+                        make_read_from_clipboard_btn(
+                            clipboard.clone(),
+                            text_to_sign.setter(),
+                        )
+                    }
                     <textarea
                         class="form-control"
                         id="textToSign"

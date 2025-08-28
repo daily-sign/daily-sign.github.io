@@ -2,10 +2,12 @@ use base64ct::{Base64, Encoding};
 use ed25519_dalek::{PUBLIC_KEY_LENGTH, SIGNATURE_LENGTH, Verifier};
 use yew::prelude::*;
 
-use crate::utils::{input_value, normalize_newlines, remove_trailing_blank_lines, textarea_value};
+use crate::utils::*;
 
 #[function_component]
 pub fn Verify() -> Html {
+    let clipboard = use_memo((), |_| get_clipboard());
+
     let ver_key_text = use_state(String::default);
     let text_to_verify = use_state(String::default);
     let signature_text = use_state(String::default);
@@ -75,6 +77,12 @@ pub fn Verify() -> Html {
                 >
                     { "公钥" }
                 </label>
+                {
+                    make_read_from_clipboard_btn(
+                        clipboard.clone(),
+                        ver_key_text.setter(),
+                    )
+                }
                 <input
                     type="text"
                     class={classes!(
@@ -113,13 +121,18 @@ pub fn Verify() -> Html {
                     >
                         { "需要验证的文本(不含签名)" }
                     </label>
+                    {
+                        make_read_from_clipboard_btn(
+                            clipboard.clone(),
+                            text_to_verify.setter(),
+                        )
+                    }
                     <textarea
                         class="form-control"
                         id="textToVerify"
                         rows="3"
                         oninput={on_text_input}
                         value={(*text_to_verify).clone()}
-                        disabled={ver_key.is_none()}
                     />
                     <div id="passwordHelpBlock" class="form-text">
                         { format!("长度: {} bytes", text_len) }
@@ -132,13 +145,18 @@ pub fn Verify() -> Html {
                     >
                         { "签名" }
                     </label>
+                    {
+                        make_read_from_clipboard_btn(
+                            clipboard.clone(),
+                            signature_text.setter(),
+                        )
+                    }
                     <textarea
                         class={classes!("form-control", if *verify_success { "is-valid" } else { "is-invalid" })}
                         id="signature"
                         rows="3"
                         oninput={on_signature_input}
                         value={(*signature_text).clone()}
-                        disabled={ver_key.is_none()}
                     />
                     if *verify_success {
                         <div class="valid-feedback">
