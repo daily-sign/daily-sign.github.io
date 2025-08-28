@@ -28,13 +28,15 @@ pub fn remove_trailing_blank_lines(s: &str) -> String {
 
 pub fn make_write_to_clipboard_btn(
     clipboard: UseClipboardHandle,
-    text: String
+    text: String,
 ) -> Html {
     html! {
-        <button class="btn-clipboard" onclick={Callback::from(move |_| {
-        clipboard.write_text(text.clone());
-        alert("复制成功");
-    })}>
+        <button class="btn-clipboard" onclick={
+            (!text.is_empty()).then_some(Callback::from(move |_| {
+                clipboard.write_text(text.clone());
+                alert("复制成功");
+            }))
+        }>
             { "复制" }
         </button>
     }
