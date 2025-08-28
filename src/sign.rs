@@ -1,15 +1,17 @@
 use argon2::{Algorithm, Argon2, Params, Version};
-use base64ct::{Base64, Encoding};
+use base64ct::{Base64, Encoding, LineEnding};
+use ed25519_dalek::pkcs8::EncodePrivateKey;
 use ed25519_dalek::{SECRET_KEY_LENGTH, Signer, SigningKey};
+use gloo_file::Blob;
 use gloo_timers::future::sleep;
 use std::time::Duration;
-use web_sys::HtmlTextAreaElement;
+use web_sys::{HtmlTextAreaElement, Url};
 use yew::platform::spawn_local;
 use yew::prelude::*;
 
 use crate::utils::*;
 
-fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
+fn derive_signing_key(password: &[u8], salt: &[u8]) -> Option<SigningKey> {
     let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
     Argon2::new_with_secret(
         b"_pepper_",
@@ -21,13 +23,13 @@ fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
             Params::DEFAULT_P_COST,
             None,
         )
-        .unwrap(),
+        .ok()?,
     )
-    .unwrap()
+    .ok()?
     .hash_password_into(password, salt, &mut secret_key_bytes)
-    .unwrap();
+    .ok()?;
 
-    SigningKey::from_bytes(&secret_key_bytes)
+    Some(SigningKey::from_bytes(&secret_key_bytes))
 }
 
 #[function_component]
@@ -39,6 +41,7 @@ pub fn Sign() -> Html {
     let text_to_sign = use_state(String::default);
     let signing_key = use_state(|| None);
     let is_calcing = use_state(|| false);
+    let key_blob_url = use_state(String::default);
 
     let text_original = (*text_to_sign).clone();
     let text_normalized = remove_trailing_blank_lines(&normalize_newlines(&text_original));
@@ -124,6 +127,7 @@ pub fn Sign() -> Html {
     {
         let signing_key = signing_key.clone();
         let is_calcing = is_calcing.clone();
+        let key_blob_url = key_blob_url.clone();
 
         // salt only required uniqueness
         let b_salt = format!("daily_sign:{}:手持两把锟斤拷", *username).into_bytes();
@@ -136,8 +140,15 @@ pub fn Sign() -> Html {
                     sleep(Duration::from_millis(10)).await;
 
                     let key = derive_signing_key(&b_password, &b_salt);
-                    signing_key.set(Some(key));
 
+                    if let Some(key) = key.as_ref() {
+                        let pem = key.to_pkcs8_pem(LineEnding::LF).unwrap_or_default();
+                        let blob = Blob::new(pem.as_str());
+                        key_blob_url.set(
+                            Url::create_object_url_with_blob(blob.as_ref()).unwrap_or_default(),
+                        );
+                    }
+                    signing_key.set(key);
                     is_calcing.set(false);
                 });
             }
@@ -191,12 +202,13 @@ pub fn Sign() -> Html {
                                 { "计算私钥" }
                             </button>
                         } else {
-                            <button
-                                class="btn btn-warning"
-                                type="button"
+                            <a
+                                class="btn btn-danger"
+                                href={(*key_blob_url).clone()}
+                                download={ format!("{}_signing_key.pem", *username) }
                             >
-                                { "导出私钥" }
-                            </button>
+                                { "⚠️ 导出私钥" }
+                            </a>
                         }
                     } else {
                         <span class="text-muted">{ "计算中..." }</span>

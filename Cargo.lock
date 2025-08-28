@@ -183,6 +183,7 @@ dependencies = [
  "base64ct",
  "ed25519-dalek",
  "gloo-dialogs 0.2.0",
+ "gloo-file 0.3.0",
  "gloo-timers 0.3.0",
  "gloo-utils 0.2.0",
  "wasm-bindgen",
