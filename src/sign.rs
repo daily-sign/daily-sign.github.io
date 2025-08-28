@@ -8,7 +8,7 @@ use yew::platform::spawn_local;
 use yew::prelude::*;
 use yew_hooks::use_clipboard;
 
-use crate::utils::{input_value, normalize_newlines, remove_trailing_blank_lines, textarea_value, make_write_to_clipboard_btn};
+use crate::utils::*;
 
 fn derive_signing_key(password: &[u8], salt: &[u8]) -> SigningKey {
     let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
@@ -182,6 +182,7 @@ pub fn Sign() -> Html {
                     >
                         { "需要签名的文本" }
                     </label>
+                    { make_read_from_clipboard_btn(clipboard.clone(), text_to_sign.setter()) }
                     <textarea
                         class="form-control"
                         id="textToSign"

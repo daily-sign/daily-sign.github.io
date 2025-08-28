@@ -41,3 +41,19 @@ pub fn make_write_to_clipboard_btn(
         </button>
     }
 }
+
+pub fn make_read_from_clipboard_btn(
+    clipboard: UseClipboardHandle,
+    setter: UseStateSetter<String>,
+) -> Html {
+    html! {
+        <button class="btn-clipboard" onclick={
+            Callback::from(move |_| {
+                clipboard.read_text();
+                setter.set((*clipboard.text).clone().unwrap_or("empty".to_owned()));
+            })
+        }>
+            { "粘贴" }
+        </button>
+    }
+}
