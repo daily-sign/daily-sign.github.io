@@ -3,6 +3,7 @@ use base64ct::{Base64, Encoding};
 use ed25519_dalek::{SECRET_KEY_LENGTH, Signer, SigningKey};
 use gloo_timers::future::sleep;
 use std::time::Duration;
+use web_sys::HtmlTextAreaElement;
 use yew::platform::spawn_local;
 use yew::prelude::*;
 
@@ -60,6 +61,36 @@ pub fn Sign() -> Html {
                 .unwrap_or_default()
         }
     });
+
+    let textarea1_ref = use_node_ref();
+    {
+        let textarea_ref = textarea1_ref.clone();
+        use_effect_with(text_original.clone(), move |_| {
+            if let Some(textarea) = textarea_ref.cast::<HtmlTextAreaElement>() {
+                textarea.style().set_property("height", "auto").unwrap();
+                let height = textarea.scroll_height();
+                textarea
+                    .style()
+                    .set_property("height", &format!("{}px", 100.max(height)))
+                    .unwrap();
+            }
+        });
+    }
+
+    let textarea2_ref = use_node_ref();
+    {
+        let textarea_ref = textarea2_ref.clone();
+        use_effect_with((*text_after_sign).clone(), move |_| {
+            if let Some(textarea) = textarea_ref.cast::<HtmlTextAreaElement>() {
+                textarea.style().set_property("height", "auto").unwrap();
+                let height = textarea.scroll_height();
+                textarea
+                    .style()
+                    .set_property("height", &format!("{}px", 100.max(height)))
+                    .unwrap();
+            }
+        });
+    }
 
     let on_calc_key = {
         let is_calcing = is_calcing.clone();
@@ -189,7 +220,7 @@ pub fn Sign() -> Html {
                     <textarea
                         class="form-control"
                         id="textToSign"
-                        rows="3"
+                        ref={textarea1_ref}
                         oninput={on_text_input}
                         value={text_original.clone()}
                     />
@@ -205,6 +236,7 @@ pub fn Sign() -> Html {
                     <textarea
                         class="form-control"
                         id="withSignature"
+                        ref={textarea2_ref}
                         readonly={true}
                         rows="3"
                         value={(*text_after_sign).clone()}

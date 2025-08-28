@@ -1,5 +1,6 @@
 use base64ct::{Base64, Encoding};
 use ed25519_dalek::{PUBLIC_KEY_LENGTH, SIGNATURE_LENGTH, Verifier};
+use web_sys::HtmlTextAreaElement;
 use yew::prelude::*;
 
 use crate::utils::*;
@@ -68,6 +69,21 @@ pub fn Verify() -> Html {
         Callback::from(move |e: InputEvent| signature.set(textarea_value(e.target())))
     };
 
+    let textarea1_ref = use_node_ref();
+    {
+        let textarea_ref = textarea1_ref.clone();
+        use_effect_with(text_original.clone(), move |_| {
+            if let Some(textarea) = textarea_ref.cast::<HtmlTextAreaElement>() {
+                textarea.style().set_property("height", "auto").unwrap();
+                let height = textarea.scroll_height();
+                textarea
+                    .style()
+                    .set_property("height", &format!("{}px", 100.max(height)))
+                    .unwrap();
+            }
+        });
+    }
+
     html! {
         <div class="my-4 col has-validation">
             <div class="col mb-3">
@@ -130,7 +146,7 @@ pub fn Verify() -> Html {
                     <textarea
                         class="form-control"
                         id="textToVerify"
-                        rows="3"
+                        ref={textarea1_ref}
                         oninput={on_text_input}
                         value={(*text_to_verify).clone()}
                     />
