@@ -3,5 +3,12 @@
     "name": "Daily Sign",
     "start_url": "/",
     "display": "standalone",
-    "description": "Easily sign your daily text messages"
+    "description": "Easily sign your daily text messages",
+    "icons": [
+        {
+            "src": "static/logo.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ]
 }
