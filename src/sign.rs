@@ -215,6 +215,26 @@ pub fn Sign() -> Html {
                     }
                 </div>
             </form>
+            if let Some(key) = signing_key.as_ref() {
+                <div class="col mb-5">
+                    <label
+                        for="pubKey"
+                        class="form-label"
+                    >
+                        { "公钥 (验证用)" }
+                    </label>
+                    { make_write_to_clipboard_btn(clipboard.clone(), Base64::encode_string(key.verifying_key().as_bytes())) }
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="pubKey"
+                        readonly={true}
+                        value={
+                             Base64::encode_string(key.verifying_key().as_bytes())
+                        }
+                    />
+                </div>
+            }
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label
@@ -255,26 +275,6 @@ pub fn Sign() -> Html {
                     />
                 </div>
             </div>
-            if let Some(key) = signing_key.as_ref() {
-                <div class="col mb-5">
-                    <label
-                        for="pubKey"
-                        class="form-label"
-                    >
-                        { "公钥 (验证用)" }
-                    </label>
-                    { make_write_to_clipboard_btn(clipboard.clone(), Base64::encode_string(key.verifying_key().as_bytes())) }
-                    <input
-                        type="text"
-                        class="form-control"
-                        id="pubKey"
-                        readonly={true}
-                        value={
-                             Base64::encode_string(key.verifying_key().as_bytes())
-                        }
-                    />
-                </div>
-            }
         </div>
     }
 }
