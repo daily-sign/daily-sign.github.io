@@ -11,19 +11,18 @@ use yew::prelude::*;
 
 use crate::utils::*;
 
-fn derive_signing_key(password: &[u8], salt: &[u8]) -> Option<SigningKey> {
+fn derive_signing_key(
+    password: &[u8],
+    salt: &[u8],
+    m_cost: u32,
+    t_cost: u32,
+) -> Option<SigningKey> {
     let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
     Argon2::new_with_secret(
         b"_pepper_",
         Algorithm::default(),
         Version::default(),
-        Params::new(
-            Params::DEFAULT_M_COST,
-            Params::DEFAULT_T_COST,
-            Params::DEFAULT_P_COST,
-            None,
-        )
-        .ok()?,
+        Params::new(m_cost, t_cost, Params::DEFAULT_P_COST, None).ok()?,
     )
     .ok()?
     .hash_password_into(password, salt, &mut secret_key_bytes)
@@ -42,6 +41,8 @@ pub fn Sign() -> Html {
     let signing_key = use_state(|| None);
     let is_calcing = use_state(|| false);
     let key_blob_url = use_state(String::default);
+    let m_cost = use_state(|| Params::DEFAULT_M_COST * 3);
+    let t_cost = use_state(|| Params::DEFAULT_T_COST * 3);
 
     let text_original = (*text_to_sign).clone();
     let text_normalized = remove_trailing_blank_lines(&normalize_newlines(&text_original));
@@ -124,10 +125,33 @@ pub fn Sign() -> Html {
         })
     };
 
+    let on_m_cost_input = {
+        let m_cost = m_cost.clone();
+        Callback::from(move |e: Event| {
+            let v = input_value(e.target())
+                .parse::<u32>()
+                .unwrap_or(Params::DEFAULT_M_COST);
+            m_cost.set(v.max(Params::MIN_M_COST));
+        })
+    };
+
+    let on_t_cost_input = {
+        let t_cost = t_cost.clone();
+        Callback::from(move |e: Event| {
+            let v = input_value(e.target())
+                .parse::<u32>()
+                .unwrap_or(Params::DEFAULT_T_COST);
+            t_cost.set(v.max(Params::MIN_T_COST));
+        })
+    };
+
     {
         let signing_key = signing_key.clone();
         let is_calcing = is_calcing.clone();
         let key_blob_url = key_blob_url.clone();
+
+        let m_cost = *m_cost;
+        let t_cost = *t_cost;
 
         // salt only required uniqueness
         let b_salt = format!("daily_sign:{}:手持两把锟斤拷", *username).into_bytes();
@@ -139,7 +163,7 @@ pub fn Sign() -> Html {
                     // sleep 10ms to re-render component before blocking
                     sleep(Duration::from_millis(10)).await;
 
-                    let key = derive_signing_key(&b_password, &b_salt);
+                    let key = derive_signing_key(&b_password, &b_salt, m_cost, t_cost);
 
                     if let Some(key) = key.as_ref() {
                         let pem = key.to_pkcs8_pem(LineEnding::LF).unwrap_or_default();
@@ -189,18 +213,62 @@ pub fn Sign() -> Html {
                         <label for="password">{ "密码" }</label>
                     </div>
                 </div>
+
                 <div class="col-md-3 mb-2">
                     if !*is_calcing {
                         if signing_key.is_none() {
-                            <button
-                                class="btn btn-primary"
-                                //onclick={on_calc_key}
-                                disabled={
-                                    username.is_empty() || password.is_empty()
-                                }
-                            >
-                                { "计算私钥" }
-                            </button>
+                            <div class="btn-group">
+                                <button
+                                    class="btn btn-primary"
+                                    disabled={
+                                        username.is_empty() || password.is_empty()
+                                    }
+                                >
+                                    { "计算私钥" }
+                                </button>
+                                <button
+                                    type="button"
+                                    class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    aria-expanded="false"
+                                    disabled={
+                                        username.is_empty() || password.is_empty()
+                                    }
+                                >
+                                    <span class="visually-hidden">{ "Toggle Dropdown" }</span>
+                                </button>
+                                <div class="col dropdown-menu px-2" style="width: max-content;">
+                                    <div class="row mb-2">
+                                        <label for="m_cost" class="col-3 col-form-label">{ "m_cost " }</label>
+                                        <div class="col-9">
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                id="m_cost"
+                                                min={Params::MIN_M_COST.to_string()}
+                                                max={Params::MAX_M_COST.to_string()}
+                                                value={m_cost.to_string()}
+                                                onchange={on_m_cost_input}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <label for="t_cost" class="col-3 col-form-label">{ "t_cost" }</label>
+                                        <div class="col-9">
+                                            <input
+                                                type="number"
+                                                class="form-control"
+                                                id="t_cost"
+                                                min={Params::MIN_T_COST.to_string()}
+                                                max={Params::MAX_T_COST.to_string()}
+                                                value={t_cost.to_string()}
+                                                onchange={on_t_cost_input}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         } else {
                             <a
                                 class="btn btn-danger"
