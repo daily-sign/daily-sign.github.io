@@ -1,0 +1,7 @@
+{
+    "short_name": "Daily Sign",
+    "name": "Daily Sign",
+    "start_url": "/",
+    "display": "standalone",
+    "description": "Easily sign your daily text messages"
+}
