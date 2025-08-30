@@ -1,7 +1,22 @@
 _version: 2
+language:
+  en: English
+  zh-CN: 中文
 copy:
   en: copy
   zh-CN: 复制
 paste:
   en: paste
   zh-CN: 粘贴
+sign:
+  en: sign
+  zh-CN: 签名
+verify:
+  en: verify
+  zh-CN: 验证
+username:
+  en: username
+  zh-CN: 用户名
+password:
+  en: password
+  zh-CN: 密码

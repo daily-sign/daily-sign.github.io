@@ -38,3 +38,9 @@ body {
     color: #fff;
     background-color: #818a91;
 }
+
+.lang-selector {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}

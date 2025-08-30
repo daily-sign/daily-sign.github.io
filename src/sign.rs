@@ -31,8 +31,13 @@ fn derive_signing_key(
     Some(SigningKey::from_bytes(&secret_key_bytes))
 }
 
+#[derive(Properties, PartialEq)]
+pub struct SignProps {
+    pub loc: String,
+}
+
 #[function_component]
-pub fn Sign() -> Html {
+pub fn Sign(_props: &SignProps) -> Html {
     let clipboard = use_memo((), |_| get_clipboard());
 
     let username = use_state(String::default);
@@ -190,12 +195,12 @@ pub fn Sign() -> Html {
                             name="username"
                             type="text"
                             class="form-control"
-                            placeholder="用户名"
+                            placeholder={ t!("username") }
                             aria-label="Name"
                             value={(*username).clone()}
                             oninput={on_username_input}
                         />
-                        <label for="username">{ "用户名" }</label>
+                        <label for="username">{ t!("username") }</label>
                     </div>
                 </div>
                 <div class="col-md-5 mb-2">
@@ -205,12 +210,12 @@ pub fn Sign() -> Html {
                             name="password"
                             type="password"
                             class="form-control"
-                            placeholder="密码"
+                            placeholder={ t!("password") }
                             aria-label="Password"
                             value={(*password).clone()}
                             oninput={on_password_input}
                         />
-                        <label for="password">{ "密码" }</label>
+                        <label for="password">{ t!("password") }</label>
                     </div>
                 </div>
 

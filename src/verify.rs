@@ -5,8 +5,13 @@ use yew::prelude::*;
 
 use crate::utils::*;
 
+#[derive(Properties, PartialEq)]
+pub struct VerifyProps {
+    pub loc: String,
+}
+
 #[function_component]
-pub fn Verify() -> Html {
+pub fn Verify(_props: &VerifyProps) -> Html {
     let clipboard = use_memo((), |_| get_clipboard());
 
     let ver_key_text = use_state(String::default);
