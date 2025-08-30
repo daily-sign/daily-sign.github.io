@@ -27,8 +27,9 @@ fn App() -> Html {
     };
 
     html! {
-        <div class="container">
-            <h1 class="text-center my-5 font-a">{ "Daily Sign" }</h1>
+        <div class="min-vh-100 position-relative">
+        <div class="container py-5">
+            <h1 class="text-center mb-5 font-a">{ "Daily Sign" }</h1>
 
             // set locale dropdown btn
             <div class="dropdown lang-selector">
@@ -82,6 +83,16 @@ fn App() -> Html {
             </div>
             <div class={classes!(is_sign.then_some("d-none"))}>
                 <verify::Verify loc={(*locale).clone()} />
+            </div>
+            </div>
+            // a footer for copyleft and github log and link
+            <div class="position-absolute bottom-0 bg-body-tertiary w-100 text-center py-2">
+                <small class="text-muted">
+                    <span class="me-4">{ "🄯2025 Daily Sign" }</span>
+                    <a href="//github.com/daily-sign/daily-sign.github.io" target="_blank" rel="noopener noreferrer">
+                        <img src="./static/github-mark.svg" alt="GitHub" height="18" />
+                    </a>
+                </small>
             </div>
         </div>
     }
