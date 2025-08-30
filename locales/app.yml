@@ -1,0 +1,7 @@
+_version: 2
+copy:
+  en: copy
+  zh-CN: 复制
+paste:
+  en: paste
+  zh-CN: 粘贴

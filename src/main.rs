@@ -5,6 +5,11 @@ mod sign;
 mod utils;
 mod verify;
 
+#[macro_use]
+extern crate rust_i18n;
+
+i18n!("locales");
+
 #[function_component]
 fn App() -> Html {
     let is_sign = use_state(|| window().location().hash().unwrap_or_default() != "#verify");

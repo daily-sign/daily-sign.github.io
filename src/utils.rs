@@ -44,7 +44,7 @@ pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Ht
                 alert("复制成功");
             }))
         }>
-            { "复制" }
+            { t!("copy") }
         </button>
     }
 }
@@ -67,7 +67,7 @@ pub fn make_read_from_clipboard_btn(
                 resolve_closure.forget();
             })
         }>
-            { "粘贴" }
+            { t!("paste") }
         </button>
     }
 }
