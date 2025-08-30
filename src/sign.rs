@@ -19,7 +19,7 @@ fn derive_signing_key(
 ) -> Option<SigningKey> {
     let mut secret_key_bytes = [0u8; SECRET_KEY_LENGTH];
     Argon2::new_with_secret(
-        b"_pepper_",
+        env!("PEPPER").as_bytes(),
         Algorithm::default(),
         Version::default(),
         Params::new(m_cost, t_cost, Params::DEFAULT_P_COST, None).ok()?,
