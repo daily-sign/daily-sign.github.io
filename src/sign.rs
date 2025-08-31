@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use argon2::{Algorithm, Argon2, Params, Version};
 use base64ct::{Base64, Encoding, LineEnding};
 use ed25519_dalek::pkcs8::EncodePrivateKey;
@@ -39,6 +41,7 @@ pub struct SignProps {
 #[function_component]
 pub fn Sign(_props: &SignProps) -> Html {
     let clipboard = use_memo((), |_| get_clipboard());
+    let copied_cb = use_memo((), |_| make_copied_cb());
 
     let username = use_state(String::default);
     let password = use_state(String::default);
@@ -296,7 +299,13 @@ pub fn Sign(_props: &SignProps) -> Html {
                     >
                         { format!("{} ({})", t!("public_key"), t!("for_verify")) }
                     </label>
-                    { make_write_to_clipboard_btn(clipboard.clone(), Base64::encode_string(key.verifying_key().as_bytes())) }
+                    {
+                        make_write_to_clipboard_btn(
+                            clipboard.clone(),
+                            Base64::encode_string(key.verifying_key().as_bytes()),
+                            copied_cb.clone(),
+                        )
+                    }
                     <input
                         type="text"
                         class="form-control"
@@ -319,7 +328,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                     {
                         make_read_from_clipboard_btn(
                             clipboard.clone(),
-                            text_to_sign.setter(),
+                            Rc::new(make_paste_cb(text_to_sign.setter())),
                         )
                     }
                     <textarea
@@ -336,7 +345,13 @@ pub fn Sign(_props: &SignProps) -> Html {
                         class="form-label"
                     >
                         { t!("signed_text") }
-                        { make_write_to_clipboard_btn(clipboard.clone(), (*text_after_sign).clone()) }
+                        {
+                            make_write_to_clipboard_btn(
+                                clipboard.clone(),
+                                (*text_after_sign).clone(),
+                                copied_cb.clone()
+                            )
+                        }
                     </label>
                     <textarea
                         class="form-control"

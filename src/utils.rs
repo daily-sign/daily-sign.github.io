@@ -28,26 +28,41 @@ pub fn remove_trailing_blank_lines(s: &str) -> String {
     trimmed.to_string()
 }
 
+pub fn make_copied_cb() -> Closure<dyn FnMut(JsValue)> {
+    Closure::new(|_| {
+        let _ = js_sys::eval(
+            "const myToastEl = document.getElementById('copyToast'); \
+            const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl); \
+            myToast.show();",
+        );
+    })
+}
+
+pub fn make_paste_cb(setter: UseStateSetter<String>) -> Closure<dyn FnMut(JsValue)> {
+    Closure::new(move |data: JsValue| {
+        if let Some(text) = data.as_string() {
+            setter.set(text);
+        }
+    })
+}
+
 // Some code is from yew-hooks use_clipboard.rs
 
 pub fn get_clipboard() -> Clipboard {
     window().navigator().clipboard()
 }
 
-pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Html {
+pub fn make_write_to_clipboard_btn(
+    clipboard: Rc<Clipboard>,
+    text: String,
+    cb: Rc<Closure<dyn FnMut(JsValue)>>,
+) -> Html {
     html! {
         <button class="btn-clipboard" onclick={
             let text = text.clone();
+            let cb = cb.clone();
             (!text.is_empty()).then_some(Callback::from(move |_| {
-                let copy_success_cb = Closure::new(|_| {
-                    let _ = js_sys::eval(
-                        "const myToastEl = document.getElementById('copyToast'); \
-                        const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl); \
-                        myToast.show();"
-                    );
-                });
-                let _ = clipboard.write_text(&text).then(&copy_success_cb);
-                copy_success_cb.forget();
+                let _ = clipboard.write_text(&text).then(cb.as_ref());
             }))
         }>
             { t!("copy") }
@@ -57,20 +72,13 @@ pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Ht
 
 pub fn make_read_from_clipboard_btn(
     clipboard: Rc<Clipboard>,
-    setter: UseStateSetter<String>,
+    cb: Rc<Closure<dyn FnMut(JsValue)>>,
 ) -> Html {
     html! {
         <button class="btn-clipboard" onclick={
+            let cb = cb.clone();
             Callback::from(move |_| {
-                let setter = setter.clone();
-                let resolve_closure = Closure::wrap(Box::new(move |data: JsValue| {
-                    if let Some(text) = data.as_string() {
-                        setter.set(text);
-                    }
-                }) as Box<dyn FnMut(JsValue)>);
-
-                let _ = clipboard.read_text().then(&resolve_closure);
-                resolve_closure.forget();
+                let _ = clipboard.read_text().then(cb.as_ref());
             })
         }>
             { t!("paste") }

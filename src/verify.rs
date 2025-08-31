@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 use base64ct::{Base64, Encoding};
 use ed25519_dalek::{PUBLIC_KEY_LENGTH, SIGNATURE_LENGTH, Verifier};
 use web_sys::HtmlTextAreaElement;
@@ -101,7 +103,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                 {
                     make_read_from_clipboard_btn(
                         clipboard.clone(),
-                        ver_key_text.setter(),
+                        Rc::new(make_paste_cb(ver_key_text.setter())),
                     )
                 }
                 <input
@@ -145,7 +147,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                     {
                         make_read_from_clipboard_btn(
                             clipboard.clone(),
-                            text_to_verify.setter(),
+                            Rc::new(make_paste_cb(text_to_verify.setter())),
                         )
                     }
                     <textarea
@@ -169,7 +171,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                     {
                         make_read_from_clipboard_btn(
                             clipboard.clone(),
-                            signature_text.setter(),
+                            Rc::new(make_paste_cb(signature_text.setter())),
                         )
                     }
                     <textarea
