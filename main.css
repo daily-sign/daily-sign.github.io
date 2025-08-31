@@ -48,3 +48,16 @@ body {
 #copyToast {
     width: 10em;
 }
+
+#langDropdownButton::before {
+    background-color: currentColor;
+    content: "";
+    height: 1.15rem;
+    -webkit-mask-image: url(./static/languages.svg);
+    mask-image: url(./static/languages.svg);
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    width: 1.15rem;
+    display: inline-block;
+    vertical-align: text-bottom;
+}

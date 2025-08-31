@@ -34,7 +34,7 @@ fn App() -> Html {
             // set locale dropdown btn
             <div class="dropdown lang-selector">
                 <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" id="langDropdownButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    { t!("language") }
+                    <span class="ms-1 d-none d-sm-inline-block">{ t!("language") }</span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="langDropdownButton">
                     {
@@ -98,9 +98,9 @@ fn App() -> Html {
             // a footer for copyleft and github log and link
             <div class="position-absolute bottom-0 bg-body-tertiary w-100 text-center py-2">
                 <small class="text-muted">
-                    <span class="me-4">{ "🄯2025 Daily Sign" }</span>
+                    <span class="me-3">{ "🄯2025 Daily Sign" }</span>
                     <a href="//github.com/daily-sign/daily-sign.github.io" target="_blank" rel="noopener noreferrer">
-                        <img src="./static/github-mark.svg" alt="GitHub" height="18" />
+                        <img src="./static/github-mark.svg" alt="GitHub" height="18" class="align-text-bottom" />
                     </a>
                 </small>
             </div>
