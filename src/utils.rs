@@ -41,7 +41,7 @@ pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Ht
             let text = text.clone();
             (!text.is_empty()).then_some(Callback::from(move |_| {
                 let _ =clipboard.write_text(&text);
-                alert("复制成功");
+                alert(t!("copy_success").as_ref());
             }))
         }>
             { t!("copy") }

@@ -96,7 +96,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                     for="verKey"
                     class="form-label"
                 >
-                    { "公钥" }
+                    { t!("public_key") }
                 </label>
                 {
                     make_read_from_clipboard_btn(
@@ -121,15 +121,15 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                 <div class="invalid-feedback">
                     {
                         if ver_key_text.is_empty() {
-                            ""
+                            t!("empty")
                         } else if ver_key_b.is_none() {
-                            "格式错误，不是有效的Base64"
+                            t!("invalid_format_base64")
                         } else if (*ver_key_b).as_ref().map(|b| b.len()) != Some(PUBLIC_KEY_LENGTH) {
-                            "长度错误，不是有效的Ed25519公钥"
+                            t!("invalid_length_public_key")
                         } else if ver_key.map(|k| k.is_weak()) == Some(true) {
-                            "弱公钥"
+                            t!("weak_public_key")
                         } else {
-                            "公钥无效"
+                            t!("invalid_public_key")
                         }
                     }
                 </div>
@@ -140,7 +140,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                         for="textToVerify"
                         class="form-label"
                     >
-                        { "需要验证的文本(不含签名)" }
+                        { t!("text_to_verify") }
                     </label>
                     {
                         make_read_from_clipboard_btn(
@@ -156,7 +156,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                         value={(*text_to_verify).clone()}
                     />
                     <div id="passwordHelpBlock" class="form-text">
-                        { format!("长度: {} bytes", text_len) }
+                        { t!("info.length", "length" => text_len) }
                     </div>
                 </div>
                 <div class="col-md-6 mb-3">
@@ -164,7 +164,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                         for="signature"
                         class="form-label"
                     >
-                        { "签名" }
+                        { t!("signature") }
                     </label>
                     {
                         make_read_from_clipboard_btn(
@@ -181,21 +181,21 @@ pub fn Verify(_props: &VerifyProps) -> Html {
                     />
                     if *verify_success {
                         <div class="valid-feedback">
-                            { "验证成功！这是签名者发布的内容" }
+                            { t!("verify_success") }
                         </div>
                     } else {
                         <div class="invalid-feedback">
                             {
                                 if signature_text.is_empty() {
-                                    ""
+                                    t!("empty")
                                 } else if signature_b.is_none() {
-                                    "格式错误，不是有效的Base64"
+                                    t!("invalid_format_base64")
                                 } else if (*signature_b).as_ref().map(|b| b.len()) != Some(SIGNATURE_LENGTH) {
-                                    "长度错误，不是有效的Ed25519签名"
+                                    t!("invalid_length_signature")
                                 } else if signature.is_none() {
-                                    "签名无效"
+                                    t!("invalid_signature")
                                 } else {
-                                    "验证失败！这很可能不是签名者发布的内容"
+                                    t!("verify_failed")
                                 }
                             }
                         </div>

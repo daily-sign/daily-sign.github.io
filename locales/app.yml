@@ -20,3 +20,66 @@ username:
 password:
   en: password
   zh-CN: 密码
+calc_private_key:
+  en: Calculate Key
+  zh-CN: 计算私钥
+text_to_sign:
+  en: Text to Sign
+  zh-CN: 需要签名的文本
+signed_text:
+  en: Signed Text
+  zh-CN: 签名后文本
+public_key:
+  en: Public Key
+  zh-CN: 公钥
+for_verify:
+  en: For Verification
+  zh-CN: 验证用
+invalid_format_base64:
+  en: Invalid format, not valid Base64
+  zh-CN: 格式错误，不是有效的Base64
+invalid_length_public_key:
+  en: Invalid length, not valid Ed25519 public key
+  zh-CN: 长度错误，不是有效的Ed25519公钥
+weak_public_key:
+  en: Weak public key
+  zh-CN: 弱公钥
+invalid_public_key:
+  en: Invalid public key
+  zh-CN: 公钥无效
+signature:
+  en: Signature
+  zh-CN: 签名
+invalid_length_signature:
+  en: Invalid length, not valid Ed25519 signature
+  zh-CN: 长度错误，不是有效的Ed25519签名
+invalid_signature:
+  en: Invalid signature
+  zh-CN: 签名无效
+verify_failed:
+  en: Verification failed! This is likely not published by the signer.
+  zh-CN: 验证失败！这很可能不是签名者发布的内容
+copy_success:
+  en: Copied!
+  zh-CN: 复制成功
+empty:
+  en: ""
+  zh-CN: ""
+verify_success:
+  en: Verification succeeded! This is published by the signer.
+  zh-CN: 验证成功！这是签名者发布的内容
+info.length:
+  en: "Length: %{length} bytes"
+  zh-CN: "长度: %{length} bytes"
+info.signature:
+  en: "Signature: %{signature}"
+  zh-CN: "签名: %{signature}"
+export_private_key:
+  en: "Export Key"
+  zh-CN: "导出私钥"
+calculating:
+  en: "Calculating..."
+  zh-CN: "计算中..."
+text_to_verify:
+  en: Text to Verify (excluding signature)
+  zh-CN: 需要验证的文本(不含签名)

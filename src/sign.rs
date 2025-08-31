@@ -61,10 +61,10 @@ pub fn Sign(_props: &SignProps) -> Html {
                     let len = text_bytes.len();
                     let signature = key.sign(text_bytes);
                     format!(
-                        "{}\n\n长度: {} bytes\n签名: {}",
+                        "{}\n\n{}\n{}",
                         text,
-                        len,
-                        Base64::encode_string(&signature.to_bytes())
+                        t!("info.length", "length" => len),
+                        t!("info.signature", "signature" => Base64::encode_string(&signature.to_bytes()))
                     )
                 })
                 .unwrap_or_default()
@@ -229,7 +229,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                                         username.is_empty() || password.is_empty()
                                     }
                                 >
-                                    { "计算私钥" }
+                                    { t!("calc_private_key") }
                                 </button>
                                 <button
                                     type="button"
@@ -280,11 +280,11 @@ pub fn Sign(_props: &SignProps) -> Html {
                                 href={(*key_blob_url).clone()}
                                 download={ format!("{}_signing_key.pem", *username) }
                             >
-                                { "⚠️ 导出私钥" }
+                                { format!("⚠️ {}", t!("export_private_key")) }
                             </a>
                         }
                     } else {
-                        <span class="text-muted">{ "计算中..." }</span>
+                        <span class="text-muted">{ t!("calculating") }</span>
                     }
                 </div>
             </form>
@@ -294,7 +294,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                         for="pubKey"
                         class="form-label"
                     >
-                        { "公钥 (验证用)" }
+                        { format!("{} ({})", t!("public_key"), t!("for_verify")) }
                     </label>
                     { make_write_to_clipboard_btn(clipboard.clone(), Base64::encode_string(key.verifying_key().as_bytes())) }
                     <input
@@ -314,7 +314,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                         for="textToSign"
                         class="form-label"
                     >
-                        { "需要签名的文本" }
+                        { t!("text_to_sign") }
                     </label>
                     {
                         make_read_from_clipboard_btn(
@@ -335,7 +335,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                         for="withSignature"
                         class="form-label"
                     >
-                        { "签名后文本" }
+                        { t!("signed_text") }
                         { make_write_to_clipboard_btn(clipboard.clone(), (*text_after_sign).clone()) }
                     </label>
                     <textarea
