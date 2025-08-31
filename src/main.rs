@@ -65,7 +65,7 @@ fn App() -> Html {
                         class={classes!("nav-link", is_sign.then_some("active"))}
                         aria-current="page" href="#sign" onclick={on_switch.clone()}
                     >
-                        { t!("sign") }
+                        { t!("title.sign") }
                     </a>
                 </li>
                 <li class="nav-item">
@@ -73,7 +73,7 @@ fn App() -> Html {
                         class={classes!("nav-link", (!*is_sign).then_some("active"))}
                         aria-current="page" href="#verify" onclick={on_switch.clone()}
                     >
-                        { t!("verify") }
+                        { t!("title.verify") }
                     </a>
                 </li>
             </ul>

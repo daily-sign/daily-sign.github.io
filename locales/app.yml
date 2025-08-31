@@ -8,11 +8,11 @@ copy:
 paste:
   en: paste
   zh-CN: 粘贴
-sign:
-  en: sign
+title.sign:
+  en: Sign
   zh-CN: 签名
-verify:
-  en: verify
+title.verify:
+  en: Verify
   zh-CN: 验证
 username:
   en: username
