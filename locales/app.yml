@@ -83,3 +83,6 @@ calculating:
 text_to_verify:
   en: Text to Verify (excluding signature)
   zh-CN: 需要验证的文本(不含签名)
+tips.works_when_offline:
+  en: "Tip: This website works even offline."
+  zh-CN: "提示: 此网页即使断网也可访问。"

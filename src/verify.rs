@@ -92,7 +92,7 @@ pub fn Verify(_props: &VerifyProps) -> Html {
     }
 
     html! {
-        <div class="my-4 col has-validation">
+        <div class="col has-validation">
             <div class="col mb-3">
                 <label
                     for="verKey"

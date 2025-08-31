@@ -78,11 +78,19 @@ fn App() -> Html {
                 </li>
             </ul>
 
-            <div class={classes!((!*is_sign).then_some("d-none"))}>
-                <sign::Sign loc={(*locale).clone()}/>
+            <div class="py-3">
+                <div class={classes!((!*is_sign).then_some("d-none"))}>
+                    <sign::Sign loc={(*locale).clone()}/>
+                </div>
+                <div class={classes!(is_sign.then_some("d-none"))}>
+                    <verify::Verify loc={(*locale).clone()} />
+                </div>
             </div>
-            <div class={classes!(is_sign.then_some("d-none"))}>
-                <verify::Verify loc={(*locale).clone()} />
+
+            <div class="text-body-secondary text-center">
+                <small class="fst-italic">
+                    { t!("tips.works_when_offline") }
+                </small>
             </div>
 
             <div class="toast position-absolute top-0 left-50" role="alert" aria-live="polite" aria-atomic="true" data-bs-delay="3000" id="copyToast">
@@ -97,7 +105,7 @@ fn App() -> Html {
             </div>
             // a footer for copyleft and github log and link
             <div class="position-absolute bottom-0 bg-body-tertiary w-100 text-center py-2">
-                <small class="text-muted">
+                <small class="text-body-secondary">
                     <span class="me-3">{ "🄯2025 Daily Sign" }</span>
                     <a href="//github.com/daily-sign/daily-sign.github.io" target="_blank" rel="noopener noreferrer">
                         <img src="./static/github-mark.svg" alt="GitHub" height="18" class="align-text-bottom" />

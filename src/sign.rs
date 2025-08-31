@@ -188,7 +188,7 @@ pub fn Sign(_props: &SignProps) -> Html {
     }
 
     html! {
-        <div class="my-4 col">
+        <div class="col">
             // To trigger the browser to save the password
             <form class="row align-items-end mb-4" onsubmit={on_calc_key}>
                 <div class="col-md-4 mb-2">
@@ -287,7 +287,7 @@ pub fn Sign(_props: &SignProps) -> Html {
                             </a>
                         }
                     } else {
-                        <span class="text-muted">{ t!("calculating") }</span>
+                        <span class="text-body-secondary">{ t!("calculating") }</span>
                     }
                 </div>
             </form>
