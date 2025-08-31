@@ -44,3 +44,7 @@ body {
     top: 1rem;
     right: 1rem;
 }
+
+#copyToast {
+    width: 10em;
+}

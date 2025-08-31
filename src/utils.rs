@@ -1,6 +1,5 @@
 use std::rc::Rc;
 
-use gloo_dialogs::alert;
 use gloo_utils::window;
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::{JsCast, JsValue};
@@ -40,8 +39,15 @@ pub fn make_write_to_clipboard_btn(clipboard: Rc<Clipboard>, text: String) -> Ht
         <button class="btn-clipboard" onclick={
             let text = text.clone();
             (!text.is_empty()).then_some(Callback::from(move |_| {
-                let _ =clipboard.write_text(&text);
-                alert(t!("copy_success").as_ref());
+                let copy_success_cb = Closure::new(|_| {
+                    let _ = js_sys::eval(
+                        "const myToastEl = document.getElementById('copyToast'); \
+                        const myToast = bootstrap.Toast.getOrCreateInstance(myToastEl); \
+                        myToast.show();"
+                    );
+                });
+                let _ = clipboard.write_text(&text).then(&copy_success_cb);
+                copy_success_cb.forget();
             }))
         }>
             { t!("copy") }
