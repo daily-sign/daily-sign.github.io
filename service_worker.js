@@ -68,7 +68,7 @@ const putInCache = async (request, response) => {
 
 let dbInstance;
 
-const failbackResponse = new Response("Network error happened", {
+const failResponse = new Response("Network error happened", {
   status: 408,
   headers: { "Content-Type": "text/plain" },
 });
@@ -103,7 +103,7 @@ const cacheFirst = async (request) => {
       request.url,
       "Returning offline page instead."
     );
-    return failbackResponse;
+    return failResponse.clone();
   }
 };
 
@@ -123,7 +123,7 @@ const cacheByTime = async (request, expire) => {
     return responseFromNetwork;
   } catch (error) {
     console.error("Fetching failed:", error);
-    return responseFromCache || failbackResponse;
+    return responseFromCache || failResponse.clone();
   }
 };
 
