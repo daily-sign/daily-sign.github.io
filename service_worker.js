@@ -3,7 +3,7 @@ import { idbKeyval as storage } from './js_utils/storage.js';
 
 
 const putInCache = async (request, response) => {
-  const cache = await caches.open("v1");
+  const cache = await caches.open("v2");
   await cache.put(request, response);
 };
 
