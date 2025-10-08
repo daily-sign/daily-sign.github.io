@@ -86,3 +86,6 @@ text_to_verify:
 tips.works_when_offline:
   en: "Tip: This website works even offline."
   zh-CN: "提示: 此网页即使断网也可访问。"
+visit_counter:
+  en: "Visitors"
+  zh-CN: "访问数"

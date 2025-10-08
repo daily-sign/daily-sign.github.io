@@ -7,6 +7,7 @@ edition = "2024"
 argon2 = "0.5.3"
 base64ct = "1.8.0"
 ed25519-dalek = { version = "2.2.0", features = [ "pem", "pkcs8" ] }
+form_urlencoded = "1.2.2"
 gloo-file = "0.3.0"
 gloo-timers = { version="0.3.0", features = [ "futures" ] }
 gloo-utils = "0.2.0"

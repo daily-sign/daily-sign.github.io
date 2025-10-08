@@ -1,3 +1,4 @@
+use form_urlencoded;
 use gloo_utils::window;
 use yew::prelude::*;
 
@@ -109,6 +110,18 @@ fn App() -> Html {
                     <span class="me-3">{ "🄯2025 Daily Sign" }</span>
                     <a href="//github.com/daily-sign/daily-sign.github.io" target="_blank" rel="noopener noreferrer">
                         <img src="./static/github-mark.svg" alt="GitHub" height="18" class="align-text-bottom" />
+                    </a>
+                    <span class="me-3"></span>
+                    <a href="https://hitscounter.dev/history?url=daily-sign" target="_blank" rel="noopener noreferrer">
+                        <img src={
+                            form_urlencoded::Serializer::new("https://hitscounter.dev/api/hit?tz=Asia%2FShanghai".to_owned())
+                                .append_pair("url", "daily-sign")
+                                .append_pair("label", &t!("visit_counter"))
+                                .append_pair("style", "flat")
+                                .append_pair("color", "e35d6a")
+                                .append_pair("icon", "heart-fill")
+                                .finish()
+                         } />
                     </a>
                 </small>
             </div>
