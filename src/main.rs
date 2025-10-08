@@ -79,7 +79,7 @@ fn App() -> Html {
                 </li>
             </ul>
 
-            <div class="py-3">
+            <div class="pt-3 pb-1">
                 <div class={classes!((!*is_sign).then_some("d-none"))}>
                     <sign::Sign loc={(*locale).clone()}/>
                 </div>
@@ -88,7 +88,7 @@ fn App() -> Html {
                 </div>
             </div>
 
-            <div class="text-body-secondary text-center">
+            <div class="text-body-secondary text-center mb-4">
                 <small class="fst-italic">
                     { t!("tips.works_when_offline") }
                 </small>
@@ -107,7 +107,7 @@ fn App() -> Html {
             // a footer for copyleft and github log and link
             <div class="position-absolute bottom-0 bg-body-tertiary w-100 text-center py-2">
                 <small class="text-body-secondary">
-                    <span class="me-2">{ "🄯2025 Daily Sign" }</span>
+                    <span class="me-2">{ "🄯2025" }</span>
                     <a href="//github.com/daily-sign/daily-sign.github.io" target="_blank" rel="noopener noreferrer">
                         <img
                             src="https://github.com/daily-sign/daily-sign.github.io/actions/workflows/deploy.yml/badge.svg"
