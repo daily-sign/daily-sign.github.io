@@ -13,21 +13,21 @@
         crossorigin="anonymous"></script>
     <link data-trunk rel="css" href="./main.css">
     <link data-trunk rel="copy-dir" href="static">
+    <link data-trunk rel="copy-dir" href="js_utils">
 
+    <link data-trunk rel="copy-file" href="service_worker.js">
     <link data-trunk rel="copy-file" href="manifest.json">
     <link rel="manifest" href="manifest.json">
-    <link data-trunk rel="copy-file" href="service_worker.js">
 
     <link data-trunk rel="rust" data-wasm-opt="s">
 
-    <script>
-        // register ServiceWorker
+    <script type="module">
+        // register ServiceWorker as module so we can use ES module import
         window.onload = () => {
             'use strict';
 
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker
-                    .register('./service_worker.js');
+                navigator.serviceWorker.register('./service_worker.js', { type: 'module' });
             }
         }
     </script>
