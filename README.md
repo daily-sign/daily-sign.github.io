@@ -1,4 +1,4 @@
-# Daily Sign
+# Daily Sign [![Deploy](https://github.com/daily-sign/daily-sign.github.io/actions/workflows/deploy.yml/badge.svg)](https://github.com/daily-sign/daily-sign.github.io/actions/workflows/deploy.yml)
 
 Make it possible to sign your daily messages.
 
